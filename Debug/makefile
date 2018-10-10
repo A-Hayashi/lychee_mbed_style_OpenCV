@@ -169,38 +169,38 @@ endif
 
 # Add inputs and outputs from these tool invocations to the build variables 
 SECONDARY_FLASH += \
-lychee_mbed_style_OpenCV.bin \
+lychee_mbed_style_OpenCV2.bin \
 
 SECONDARY_SIZE += \
-lychee_mbed_style_OpenCV.siz \
+lychee_mbed_style_OpenCV2.siz \
 
 
 # All Target
-all: lychee_mbed_style_OpenCV.elf secondary-outputs
+all: lychee_mbed_style_OpenCV2.elf secondary-outputs
 
 # Tool invocations
-lychee_mbed_style_OpenCV.elf: $(OBJS) $(USER_OBJS)
+lychee_mbed_style_OpenCV2.elf: $(OBJS) $(USER_OBJS)
 	@echo 'Building target: $@'
 	@echo 'Invoking: Cross ARM C++ Linker'
-	arm-none-eabi-g++ -mcpu=cortex-a9 -march=armv7-a -marm -mthumb-interwork -mfloat-abi=hard -mfpu=vfpv3 -mno-unaligned-access -O2 -fmessage-length=0 -ffunction-sections -fdata-sections -fno-builtin -funsigned-char -fno-delete-null-pointer-checks -fomit-frame-pointer -Wall -Wextra -Wno-unused-parameter -Wno-missing-field-initializers  -g -T "C:\\Users\\Akinori\\e2_studio\\workspace\\lychee_mbed_style_OpenCV\\mbed-os\\targets\\TARGET_RENESAS\\TARGET_RZ_A1XX\\TARGET_GR_LYCHEE\\device\\TOOLCHAIN_GCC_ARM\\RZA1LU.ld" -Xlinker --gc-sections -Xlinker --wrap=main -Xlinker --wrap=_malloc_r -Xlinker --wrap=_free_r -Xlinker --wrap=_realloc_r -Xlinker --wrap=_memalign_r -Xlinker --wrap=_calloc_r -Xlinker --wrap=exit -Xlinker --wrap=atexit -Wl,-Map,"lychee_mbed_style_OpenCV.map" --specs=nosys.specs -DMBED_DEBUG -DMBED_TRAP_ERRORS_ENABLED=1 -Wl,-n -mthumb-interwork -march=armv7-a -mfpu=vfpv3 -mno-unaligned-access -Wl,--start-group -lstdc++ -lsupc++ -lm -lc -lgcc -lnosys -Wl,--end-group -o "lychee_mbed_style_OpenCV.elf" $(OBJS) $(USER_OBJS) $(LIBS)
+	arm-none-eabi-g++ -mcpu=cortex-a9 -march=armv7-a -marm -mthumb-interwork -mfloat-abi=hard -mfpu=vfpv3 -mno-unaligned-access -O2 -fmessage-length=0 -ffunction-sections -fdata-sections -fno-builtin -funsigned-char -fno-delete-null-pointer-checks -fomit-frame-pointer -Wall -Wextra -Wno-unused-parameter -Wno-missing-field-initializers  -g -T "C:\\Users\\Akinori\\e2_studio\\workspace\\lychee_mbed_style_OpenCV2\\mbed-os\\targets\\TARGET_RENESAS\\TARGET_RZ_A1XX\\TARGET_GR_LYCHEE\\device\\TOOLCHAIN_GCC_ARM\\RZA1LU.ld" -Xlinker --gc-sections -Xlinker --wrap=main -Xlinker --wrap=_malloc_r -Xlinker --wrap=_free_r -Xlinker --wrap=_realloc_r -Xlinker --wrap=_memalign_r -Xlinker --wrap=_calloc_r -Xlinker --wrap=exit -Xlinker --wrap=atexit -Wl,-Map,"lychee_mbed_style_OpenCV2.map" --specs=nosys.specs -DMBED_DEBUG -DMBED_TRAP_ERRORS_ENABLED=1 -Wl,-n -mthumb-interwork -march=armv7-a -mfpu=vfpv3 -mno-unaligned-access -Wl,--start-group -lstdc++ -lsupc++ -lm -lc -lgcc -lnosys -Wl,--end-group -o "lychee_mbed_style_OpenCV2.elf" $(OBJS) $(USER_OBJS) $(LIBS)
 	@echo 'Finished building target: $@'
 	@echo ' '
 
-lychee_mbed_style_OpenCV.bin: lychee_mbed_style_OpenCV.elf
+lychee_mbed_style_OpenCV2.bin: lychee_mbed_style_OpenCV2.elf
 	@echo 'Invoking: Cross ARM GNU Create Flash Image'
-	arm-none-eabi-objcopy -O binary "lychee_mbed_style_OpenCV.elf"  "lychee_mbed_style_OpenCV.bin"
+	arm-none-eabi-objcopy -O binary "lychee_mbed_style_OpenCV2.elf"  "lychee_mbed_style_OpenCV2.bin"
 	@echo 'Finished building: $@'
 	@echo ' '
 
-lychee_mbed_style_OpenCV.siz: lychee_mbed_style_OpenCV.elf
+lychee_mbed_style_OpenCV2.siz: lychee_mbed_style_OpenCV2.elf
 	@echo 'Invoking: Cross ARM GNU Print Size'
-	arm-none-eabi-size --format=berkeley "lychee_mbed_style_OpenCV.elf"
+	arm-none-eabi-size --format=berkeley "lychee_mbed_style_OpenCV2.elf"
 	@echo 'Finished building: $@'
 	@echo ' '
 
 # Other Targets
 clean:
-	-$(RM) $(JMP_DEPS)$(FSY_DEPS)$(C_UPPER_DEPS)$(SECONDARY_SIZE)$(P_DEPS)$(C_DEPS)$(SRC_DEPS)$(PP_DEPS)$(CC_DEPS)$(SX_DEPS)$(C++_DEPS)$(OBJS)$(CXX_DEPS)$(SECONDARY_FLASH)$(ASM_DEPS)$(S_UPPER_DEPS)$(CPP_DEPS) lychee_mbed_style_OpenCV.elf
+	-$(RM) $(JMP_DEPS)$(FSY_DEPS)$(C_UPPER_DEPS)$(SECONDARY_SIZE)$(P_DEPS)$(C_DEPS)$(SRC_DEPS)$(PP_DEPS)$(CC_DEPS)$(SX_DEPS)$(C++_DEPS)$(OBJS)$(CXX_DEPS)$(SECONDARY_FLASH)$(ASM_DEPS)$(S_UPPER_DEPS)$(CPP_DEPS) lychee_mbed_style_OpenCV2.elf
 	-@echo ' '
 
 secondary-outputs: $(SECONDARY_FLASH) $(SECONDARY_SIZE)

@@ -58,6 +58,17 @@
 #define FRAME_BUFFER_STRIDE    (((VIDEO_PIXEL_HW * DATA_SIZE_PER_PIC) + 31u) & ~31u)
 #define FRAME_BUFFER_HEIGHT    (VIDEO_PIXEL_VW)
 
+#define DATA_SIZE_PER_PIC      (2u)
+#define BYTE_PER_PIXEL_YUV     DATA_SIZE_PER_PIC
+#define BYTE_PER_PIXEL_RGB     (3u)
+
+#define USE_NEWWORKBUF
+
+enum {
+	FORMAT_YUV422 = 0,
+	FORMAT_RGB888,
+	FORMAT_GRAY
+};
 
 /**
 * @brief	Starts the camera
@@ -72,6 +83,7 @@ void camera_start(void);
 * @return	jpeg size
 */
 size_t create_jpeg();
+size_t create_Jpeg2(uint16_t width, uint16_t height, uint8_t* buf, uint8_t format);
 
 /**
 * @brief	Return jpeg addresse
@@ -80,12 +92,16 @@ size_t create_jpeg();
 */
 uint8_t* get_jpeg_adr();
 
+uint8_t* get_ImageAdr();
+
 /**
 * @brief	Takes a video frame (in grayscale)
 * @param	img_gray	Grayscale video frame
 * @return	None
 */
 void create_gray(cv::Mat &img_gray);
+void create_bgr(cv::Mat &img_bgr);
+void create_yuv(cv::Mat &img_yuv);
 
 #if MBED_CONF_APP_LCD
 void ClearSquare(void);

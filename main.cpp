@@ -9,16 +9,15 @@
 #include "face_detector.hpp"
 #include "DisplayApp.h"
 #include "imgproc.hpp"
+#include "objdetect.hpp"
 
 using namespace cv;
 
+#undef MBED_CONF_APP_LCD
+#define MBED_CONF_APP_LCD	(0)
 #define DBG_CAPTURE   (0)
 #define DBG_PCMONITOR (1)
 #define FACE_DETECTOR_MODEL     "/storage/lbpcascade_frontalface.xml"
-
-/* Application variables */
-//Mat frame_gray;     // Input frame (in grayscale)
-//Mat frame_bgr;
 
 uint8_t bgr_buf[3 * VIDEO_PIXEL_HW * VIDEO_PIXEL_VW]__attribute((section("NC_BSS"),aligned(32)));
 uint8_t gray_buf[1 * VIDEO_PIXEL_HW * VIDEO_PIXEL_VW]__attribute((section("NC_BSS"),aligned(32)));
@@ -35,9 +34,7 @@ DigitalOut led4(LED4);
 Timer  detect_timer;
 
 
-//Mat img_bgr;
-static Thread mainTask(osPriorityNormal, (1024 * 33));
-
+static Thread mainTask(osPriorityNormal, (1024 * 50));
 #if 0
 
 static void main_task(void) {
@@ -72,46 +69,41 @@ static void main_task(void) {
     led4 = 1;
 
     // SD & USB
-//    SdUsbConnect storage("storage");
-//    printf("Finding a storage...");
+    SdUsbConnect storage("storage");
+    printf("Finding a storage...");
     // wait for the storage device to be connected
-//    storage.wait_connect();
+    storage.wait_connect();
     printf("done\n");
     led3 = 1;
 
     // Initialize the face detector
     printf("Initializing the face detector...");
-//    detectFaceInit(FACE_DETECTOR_MODEL);
+    detectFaceInit(FACE_DETECTOR_MODEL);
     printf("done\n");
     led2 = 1;
 
-//    detect_timer.reset();
-//    detect_timer.start();
+    detect_timer.reset();
+    detect_timer.start();
+
 
     while (1) {
-    	Mat img_bgr(VIDEO_PIXEL_HW, VIDEO_PIXEL_VW, CV_8UC3, bgr_buf);
     	Mat img_gray(VIDEO_PIXEL_HW, VIDEO_PIXEL_VW, CV_8UC1, gray_buf);
-
-    	create_gray(img_gray);
+    	Mat img_bgr(VIDEO_PIXEL_HW, VIDEO_PIXEL_VW, CV_8UC3, bgr_buf);
         create_bgr(img_bgr);
+    	create_bgr(img_bgr);
 
-        rectangle(img_bgr, Rect(10, 10, 100, 200), Scalar(0,0,200), 5, LINE_AA);
-        circle(img_bgr, Point(50, 50), 30, Scalar(200,0,0), 10, LINE_AA);
-        putText(img_bgr, "test", Point(100, 100), FONT_HERSHEY_SIMPLEX, 3, Scalar(0,200,0), 1, LINE_AA);
+        flip(img_gray, img_gray, 1);
+        flip(img_bgr, img_bgr, 1);
 
-//        size_t jpeg_size = create_Jpeg2(img_gray.size().width, img_gray.size().height, img_gray.data, FORMAT_GRAY);
-        size_t jpeg_size = create_Jpeg2(img_bgr.size().width, img_bgr.size().height, img_bgr.data, FORMAT_RGB888);
-//        size_t jpeg_size = create_jpeg();
-        display_app.SendJpeg(get_jpeg_adr(), jpeg_size);
-#if 0
-        if (frame_gray.empty()) {
+
+        if (img_gray.empty()) {
             printf("ERR: There is no input frame, retry to capture\n");
             continue;
         }
 
         // Detect a face in the frame
         Rect face_roi;
-        detectFace(frame_gray, face_roi);
+        detectFace(img_gray, face_roi);
 
         if (face_roi.width > 0 && face_roi.height > 0) {   // A face is detected
             led1 = 1;
@@ -120,6 +112,8 @@ static void main_task(void) {
             ClearSquare();
             DrawSquare(face_roi.x, face_roi.y, face_roi.width, face_roi.height, 0x0000f0f0);
 #endif
+            rectangle(img_bgr, Rect(face_roi.x, face_roi.y, face_roi.width, face_roi.height), Scalar(0,0,200), 5, LINE_AA);
+
             detect_timer.reset();
 
 #if (DBG_CAPTURE == 1)
@@ -135,18 +129,23 @@ static void main_task(void) {
             led1 = 0;
         }
 
-#if (DBG_PCMONITOR == 1)
-        size_t jpeg_size = create_jpeg();
 
-        display_app.SendJpeg(get_jpeg_adr(), jpeg_size);
+#if (DBG_PCMONITOR == 1)
+
+//		rectangle(img_bgr, Rect(10, 10, 100, 200), Scalar(0,0,200), 5, LINE_AA);
+//		circle(img_bgr, Point(50, 50), 30, Scalar(200,0,0), 10, LINE_AA);
+//		putText(img_bgr, "test", Point(100, 100), FONT_HERSHEY_SIMPLEX, 3, Scalar(0,200,0), 1, LINE_AA);
+
+//		size_t jpeg_size = create_Jpeg2(img_gray.size().width, img_gray.size().height, img_gray.data, FORMAT_GRAY);
+		size_t jpeg_size = create_Jpeg2(img_bgr.size().width, img_bgr.size().height, img_bgr.data, FORMAT_RGB888);
+//		size_t jpeg_size = create_jpeg();
+		display_app.SendJpeg(get_jpeg_adr(), jpeg_size);
 #endif
 
 #endif
 
     }
 }
-
-#endif
 
 int main(void) {
     mainTask.start(callback(main_task));

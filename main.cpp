@@ -8,6 +8,7 @@
 #include "camera_if.hpp"
 #include "face_detector.hpp"
 #include "DisplayApp.h"
+#include "imgproc.hpp"
 
 using namespace cv;
 
@@ -93,8 +94,13 @@ static void main_task(void) {
 
     	create_gray(img_gray);
         create_bgr(img_bgr);
-        size_t jpeg_size = create_Jpeg2(img_gray.size().width, img_gray.size().height, img_gray.data, FORMAT_GRAY);
-//        size_t jpeg_size = create_Jpeg2(img_bgr.size().width, img_bgr.size().height, img_bgr.data, FORMAT_RGB888);
+
+        rectangle(img_bgr, Rect(10, 10, 100, 200), Scalar(0,0,200), 5, LINE_AA);
+        circle(img_bgr, Point(50, 50), 30, Scalar(200,0,0), 10, LINE_AA);
+        putText(img_bgr, "test", Point(100, 100), FONT_HERSHEY_SIMPLEX, 3, Scalar(0,200,0), 1, LINE_AA);
+
+//        size_t jpeg_size = create_Jpeg2(img_gray.size().width, img_gray.size().height, img_gray.data, FORMAT_GRAY);
+        size_t jpeg_size = create_Jpeg2(img_bgr.size().width, img_bgr.size().height, img_bgr.data, FORMAT_RGB888);
 //        size_t jpeg_size = create_jpeg();
         display_app.SendJpeg(get_jpeg_adr(), jpeg_size);
 #if 0
